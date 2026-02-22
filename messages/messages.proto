@@ -1,0 +1,13 @@
+// This file defines the data contracts (messages) for the axiom-analytics package.
+
+syntax = "proto3";
+
+package axiom_analytics;
+
+option go_package = ".;gen";
+
+// AnalysisReport contains the results of a text analysis operation.
+message AnalysisReport {
+  string summary = 1;
+  int32 word_count = 2;
+}
