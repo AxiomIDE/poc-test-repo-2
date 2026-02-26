@@ -4,10 +4,19 @@ import (
 	"context"
 	"testing"
 
-	gen "axiom-analytics/gen"
+	"axiom-analytics/axiom"
 	axiomtextops "axiom-analytics/gen/imports/axiom-text-ops/0.1.0"
 	"axiom-analytics/nodes"
 )
+
+type testLogger struct{ t *testing.T }
+
+func (l *testLogger) Debug(msg string, args ...any) { l.t.Logf("DEBUG  %s %v", msg, args) }
+func (l *testLogger) Info(msg string, args ...any)  { l.t.Logf("INFO   %s %v", msg, args) }
+func (l *testLogger) Warn(msg string, args ...any)  { l.t.Logf("WARN   %s %v", msg, args) }
+func (l *testLogger) Error(msg string, args ...any) { l.t.Logf("ERROR  %s %v", msg, args) }
+
+var _ axiom.Logger = (*testLogger)(nil)
 
 // TESTS — delete this block when done ─────────────────────────────────────────
 // Tests are required to publish this package. The publish pipeline runs your
@@ -28,12 +37,18 @@ import (
 
 func TestAnalyze(t *testing.T) {
 	ctx := context.Background()
-	input := &axiomtextops.TokensResult{}
+	log := &testLogger{t}
+	input := &axiomtextops.TokensResult{
+		Tokens: []string{"hello", "world"},
+		Count:  2,
+	}
 
-	got, err := nodes.Analyze(ctx, input)
+	got, err := nodes.Analyze(ctx, log, input)
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
 
-	_ = got // TODO: assert output fields — e.g. if got.SomeField != "expected" { t.Errorf(...) }
+	if got.WordCount != 2 {
+		t.Errorf("expected word count 2, got %d", got.WordCount)
+	}
 }
