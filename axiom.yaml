@@ -5,6 +5,10 @@ nodes:
     - name: Analyze
       input: TokensResult
       output: AnalysisReport
+    - name: Summarize
+      input: TokensResult
+      output: AnalysisReport
+      type: pipeline
 imports:
     - package: axiom-text-ops
       version: 0.1.0
