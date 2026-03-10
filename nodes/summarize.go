@@ -11,7 +11,7 @@ import (
 
 // Summarize emits one AnalysisReport per token in the input stream, providing
 // an incremental per-token summary — demonstrating a pipeline node.
-func Summarize(ctx context.Context, log axiom.Logger, in <-chan *axiomtextops.TokensResult, emit func(*gen.AnalysisReport) error) error {
+func Summarize(ctx context.Context, log axiom.Logger, secrets axiom.Secrets, in <-chan *axiomtextops.TokensResult, emit func(*gen.AnalysisReport) error) error {
 	for input := range in {
 		for _, token := range input.GetTokens() {
 			if err := emit(&gen.AnalysisReport{

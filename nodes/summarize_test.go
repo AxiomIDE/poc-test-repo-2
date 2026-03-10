@@ -13,7 +13,7 @@ func TestSummarize(t *testing.T) {
 	in <- &axiomtextops.TokensResult{Tokens: []string{"foo", "bar"}, Count: 2}
 	close(in)
 
-	err := Summarize(nil, nil, in, func(r *gen.AnalysisReport) error {
+	err := Summarize(nil, nil, nil, in, func(r *gen.AnalysisReport) error {
 		results = append(results, r)
 		return nil
 	})
