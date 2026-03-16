@@ -5,7 +5,7 @@ import (
 	"testing"
 
 	"axiom-analytics/axiom"
-	axiomtextops "axiom-analytics/gen/imports/axiom-text-ops/0.1.0"
+	axiomtextops "axiom-analytics/gen/imports/christian-axiom-text-ops/0.1.0"
 	"axiom-analytics/nodes"
 )
 

@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	gen "axiom-analytics/gen"
-	axiomtextops "axiom-analytics/gen/imports/axiom-text-ops/0.1.0"
+	axiomtextops "axiom-analytics/gen/imports/christian-axiom-text-ops/0.1.0"
 )
 
 func TestSummarize(t *testing.T) {

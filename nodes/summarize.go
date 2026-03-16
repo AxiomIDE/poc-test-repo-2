@@ -6,7 +6,7 @@ import (
 
 	"axiom-analytics/axiom"
 	gen "axiom-analytics/gen"
-	axiomtextops "axiom-analytics/gen/imports/axiom-text-ops/0.1.0"
+	axiomtextops "axiom-analytics/gen/imports/christian-axiom-text-ops/0.1.0"
 )
 
 // Summarize emits one AnalysisReport per token in the input stream, providing
