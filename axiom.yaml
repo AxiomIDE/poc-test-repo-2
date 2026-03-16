@@ -1,4 +1,4 @@
-name: axiom-analytics
+name: christian/axiom-analytics
 version: 0.1.0
 language: go
 nodes:
@@ -10,7 +10,7 @@ nodes:
       output: AnalysisReport
       type: pipeline
 imports:
-    - package: axiom-text-ops
+    - package: christian/axiom-text-ops
       version: 0.1.0
       messages:
         - TextRequest
