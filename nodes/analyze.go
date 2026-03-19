@@ -7,7 +7,7 @@ import (
 
 	"axiom-analytics/axiom"
 	gen "axiom-analytics/gen"
-	axiomtextops "axiom-analytics/gen/imports/christian-axiom-text-ops/0.1.0"
+	axiomtextops "axiom-analytics/gen/imports/axiom-official-axiom-text-ops/0.1.0"
 )
 
 // Analyze accepts tokenized text and produces a summary report with the
