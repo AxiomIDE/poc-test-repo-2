@@ -9,6 +9,16 @@ import (
 	"axiom-analytics/nodes"
 )
 
+// testContext is a testing.T-backed axiom.Context for unit tests.
+type testContext struct {
+	t          *testing.T
+	secretsMap map[string]string
+}
+
+func newTestContext(t *testing.T) *testContext {
+	return &testContext{t: t, secretsMap: map[string]string{}}
+}
+
 type testLogger struct{ t *testing.T }
 
 func (l *testLogger) Debug(msg string, args ...any) { l.t.Logf("DEBUG  %s %v", msg, args) }
@@ -16,13 +26,18 @@ func (l *testLogger) Info(msg string, args ...any)  { l.t.Logf("INFO   %s %v", m
 func (l *testLogger) Warn(msg string, args ...any)  { l.t.Logf("WARN   %s %v", msg, args) }
 func (l *testLogger) Error(msg string, args ...any) { l.t.Logf("ERROR  %s %v", msg, args) }
 
-var _ axiom.Logger = (*testLogger)(nil)
+type testSecretMap map[string]string
 
-type testSecrets struct{}
+func (s testSecretMap) Get(name string) (string, bool) { v, ok := s[name]; return v, ok }
 
-func (testSecrets) Get(_ string) (string, bool) { return "", false }
+type stubMemory struct{}
 
-var _ axiom.Secrets = testSecrets{}
+func (c *testContext) Log() axiom.Logger     { return &testLogger{c.t} }
+func (c *testContext) Secrets() axiom.Secrets { return testSecretMap(c.secretsMap) }
+func (c *testContext) Memory() axiom.Memory   { return stubMemory{} }
+func (c *testContext) ExecutionID() string    { return "test-execution-id" }
+func (c *testContext) FlowID() string         { return "test-flow-id" }
+func (c *testContext) TenantID() string       { return "test-tenant-id" }
 
 // TESTS — delete this block when done ─────────────────────────────────────────
 // Tests are required to publish this package. The publish pipeline runs your
@@ -43,13 +58,13 @@ var _ axiom.Secrets = testSecrets{}
 
 func TestAnalyze(t *testing.T) {
 	ctx := context.Background()
-	log := &testLogger{t}
+	ax := newTestContext(t)
 	input := &axiomtextops.TokensResult{
 		Tokens: []string{"hello", "world"},
 		Count:  2,
 	}
 
-	got, err := nodes.Analyze(ctx, log, testSecrets{}, input)
+	got, err := nodes.Analyze(ctx, ax, input)
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
