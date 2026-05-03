@@ -30,11 +30,9 @@ type testSecretMap map[string]string
 
 func (s testSecretMap) Get(name string) (string, bool) { v, ok := s[name]; return v, ok }
 
-type stubMemory struct{}
-
-func (c *testContext) Log() axiom.Logger     { return &testLogger{c.t} }
+func (c *testContext) Log() axiom.Logger      { return &testLogger{c.t} }
 func (c *testContext) Secrets() axiom.Secrets { return testSecretMap(c.secretsMap) }
-func (c *testContext) Memory() axiom.Memory   { return stubMemory{} }
+func (c *testContext) Agent() axiom.Agent     { return nil }
 func (c *testContext) ExecutionID() string    { return "test-execution-id" }
 func (c *testContext) FlowID() string         { return "test-flow-id" }
 func (c *testContext) TenantID() string       { return "test-tenant-id" }
