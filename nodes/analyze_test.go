@@ -30,12 +30,36 @@ type testSecretMap map[string]string
 
 func (s testSecretMap) Get(name string) (string, bool) { v, ok := s[name]; return v, ok }
 
-func (c *testContext) Log() axiom.Logger      { return &testLogger{c.t} }
-func (c *testContext) Secrets() axiom.Secrets { return testSecretMap(c.secretsMap) }
-func (c *testContext) Agent() axiom.Agent     { return nil }
-func (c *testContext) ExecutionID() string    { return "test-execution-id" }
-func (c *testContext) FlowID() string         { return "test-flow-id" }
-func (c *testContext) TenantID() string       { return "test-tenant-id" }
+// Empty running-flow view — there is no graph in a unit test (ADR-050/055).
+type testFlowReflection struct{}
+
+func (testFlowReflection) Nodes() []axiom.ReflectionNode     { return nil }
+func (testFlowReflection) Edges() []axiom.ReflectionEdge     { return nil }
+func (testFlowReflection) LoopEdges() []axiom.ReflectionEdge { return nil }
+func (testFlowReflection) Position() axiom.FlowPosition      { return axiom.FlowPosition{} }
+func (testFlowReflection) GraphID() string                   { return "" }
+
+type testReflection struct{}
+
+func (testReflection) Flow() axiom.FlowReflection { return testFlowReflection{} }
+
+// No-op mutation sink — these nodes are not mutation-capable (ADR-051/054).
+type testFlowMutation struct{}
+
+func (testFlowMutation) AddNode(_, _, _ string, _ *axiom.CanvasPosition) uint32 { return 0 }
+func (testFlowMutation) AddEdge(_, _ uint32, _ *axiom.EdgeCondition)            {}
+
+type testMutation struct{}
+
+func (testMutation) Flow() axiom.FlowMutation { return testFlowMutation{} }
+
+func (c *testContext) Log() axiom.Logger            { return &testLogger{c.t} }
+func (c *testContext) Secrets() axiom.Secrets       { return testSecretMap(c.secretsMap) }
+func (c *testContext) ExecutionID() string          { return "test-execution-id" }
+func (c *testContext) FlowID() string               { return "test-flow-id" }
+func (c *testContext) TenantID() string             { return "test-tenant-id" }
+func (c *testContext) Reflection() axiom.Reflection { return testReflection{} }
+func (c *testContext) Mutation() axiom.Mutation     { return testMutation{} }
 
 // TESTS — delete this block when done ─────────────────────────────────────────
 // Tests are required to publish this package. The publish pipeline runs your
